@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InSync Canvas</title>
+    <link rel="stylesheet" href="canvasStyle.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="form-side left">
+        <h2>Form Side 1</h2>
+        <input type="text" id="field1" placeholder="Field 1" required />
+        <input type="text" id="field2" placeholder="Field 2" required />
+        <button onclick="submitForm('left')">Submit</button>
+      </div>
+      <div class="form-side right">
+        <h2>Form Side 2</h2>
+        <input type="text" id="field3" placeholder="Field 3" required />
+        <input type="text" id="field4" placeholder="Field 4" required />
+        <button onclick="submitForm('right')">Submit</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
