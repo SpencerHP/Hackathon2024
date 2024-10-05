@@ -1,153 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css"
-    />
-    <link rel="stylesheet" href="canvasStyle.css" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+    <link rel="stylesheet" href="canvasStyle.css">
     <title>Excel Widget Example - Dark Mode</title>
-  </head>
-  <body>
-    <div class="Header"></div>
-      <nav>
-        <p>Project 1</p>
-        <p>Workbook 1</p>
-        <h5>InSync</h5>
-        <h1>Canvas</h1>
-        <ul id="sidemenu">
-          <li><a href="/index.html">Home</a></li>
-        </ul>
-      </nav>
-    </div>
-    
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="title-container">
+                <h5 class="smaller-title">InSync</h5>
+                <h2 class="larger-title">Canvas</h2>
+            </div>
+            <nav>
+                <ul id="sidemenu">
+                    <li><a href="index.html">Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
     <div class="container">
-      <div class="input-side" id="input-side-1"></div>
-      <div class="input-side" id="input-side-2"></div>
+        <div class="input-side" id="input-side-1"></div>
+        <div class="input-side" id="input-side-2"></div>
     </div>
 
-    
+    <div class="import-button1">
+      <button type="button" class="custom-file-upload" onclick="document.getElementById('import-file-1').click();">
+          Import File 1
+      </button>
+      <input type="file" id="import-file-1" accept=".xlsx, .xls" style="display: none;" onchange="importExcel(1)" />
+  </div>
+
+<div class="button-container">
+  <button type="button" class="syncButton" onclick="syncTables()">Sync</button>
+</div>
+
+<div class="import-button2">
+  <button type="button" class="custom-file-upload" onclick="document.getElementById('import-file-2').click();">
+      Import File 2
+  </button>
+  <input type="file" id="import-file-2" accept=".xlsx, .xls" style="display: none;" onchange="importExcel(2)" />
+</div>
+
+
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
     <script>
-      // Data for the Handsontable instances
-      const data1 = [
-        [
-          "",
-          "Header 1",
-          "Header 2",
-          "Header 3",
-          "Header 4",
-          "Header 5",
-          "Header 6",
-          "Header 7",
-          "Header 8",
-          "Header 9",
-          "Header 10",
-        ],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-      ];
+        // Data for the Handsontable instances
+        const headers = Array.from({ length: 20 }, (_, i) => ``);
+        const dataTemplate = Array.from({ length: 30 }, () => Array(20).fill(""));
 
-      const data2 = [
-        [
-          "",
-          "Header 1",
-          "Header 2",
-          "Header 3",
-          "Header 4",
-          "Header 5",
-          "Header 6",
-          "Header 7",
-          "Header 8",
-          "Header 9",
-          "Header 10",
-        ],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-      ];
+        const data1 = [headers, ...dataTemplate];
+        const data2 = [headers, ...dataTemplate];
 
-      // Initialize Handsontable for Input Side 1
-      const container1 = document.getElementById("input-side-1");
-      const hot1 = new Handsontable(container1, {
-        data: data1,
-        rowHeaders: true,
-        colHeaders: true,
-        fixedRowsTop: 1,
-        fixedColumnsLeft: 1,
-        filters: true,
-        dropdownMenu: true,
-        licenseKey: "non-commercial-and-evaluation", // For non-commercial use
-      });
+        // Initialize Handsontable for Input Side 1
+        const container1 = document.getElementById("input-side-1");
+        const hot1 = new Handsontable(container1, {
+            data: data1,
+            rowHeaders: true,
+            colHeaders: true,
+            fixedRowsTop: 1,
+            fixedColumnsLeft: 1,
+            filters: true,
+            dropdownMenu: true,
+            licenseKey: "non-commercial-and-evaluation", // For non-commercial use
+        });
 
-      // Initialize Handsontable for Input Side 2
-      const container2 = document.getElementById("input-side-2");
-      const hot2 = new Handsontable(container2, {
-        data: data2,
-        rowHeaders: true,
-        colHeaders: true,
-        fixedRowsTop: 1,
-        fixedColumnsLeft: 1,
-        filters: true,
-        dropdownMenu: true,
-        licenseKey: "non-commercial-and-evaluation", // For non-commercial use
-      });
+        // Initialize Handsontable for Input Side 2
+        const container2 = document.getElementById("input-side-2");
+        const hot2 = new Handsontable(container2, {
+            data: data2,
+            rowHeaders: true,
+            colHeaders: true,
+            fixedRowsTop: 1,
+            fixedColumnsLeft: 1,
+            filters: true,
+            dropdownMenu: true,
+            licenseKey: "non-commercial-and-evaluation", // For non-commercial use
+        });
+
+        // Import Excel function
+        function importExcel(sheetNumber) {
+            const fileInput = document.getElementById(`import-file-${sheetNumber}`);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file to import.");
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                console.log("Imported data:", jsonData);
+
+                if (sheetNumber === 1) {
+                    hot1.loadData(jsonData);
+                } else if (sheetNumber === 2) {
+                    hot2.loadData(jsonData);
+                }
+            };
+
+            reader.onerror = function () {
+                alert("Error reading file. Please try again.");
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function syncTables() {
+            const numCols1 = hot1.countCols();
+            const numCols2 = hot2.countCols();
+            let columnMismatch = false;
+            const weights = {};
+            const maxCols = Math.min(numCols1, numCols2);
+
+            for (let colIndex = 0; colIndex < maxCols; colIndex++) {
+                const header1 = hot1.getDataAtCell(0, colIndex);
+                const header2 = hot2.getDataAtCell(0, colIndex);
+
+                if (!header1 || !header2) {
+                    console.log("Encountered an empty column at index", colIndex);
+                    break;
+                }
+
+                if (header1 !== header2) {
+                    columnMismatch = true;
+                    alert(`Mismatch detected! Column ${colIndex} differs: "${header1}" vs "${header2}".`);
+                    break;
+                }
+
+                const weight = prompt(`Please enter a weight for column "${header1}":`);
+                if (weight !== null) {
+                    weights[header1] = weight;
+                }
+            }
+
+            if (!columnMismatch) {
+                console.log("Weights for matching columns:", weights);
+            } else {
+                console.log("Columns did not match. Sync aborted.");
+            }
+        }
     </script>
-
-    <br />
-    <br />
-    <button
-      type="button"
-      class="syncButton"
-      onclick="needToCreateFunctionMaybe()"
-    >
-      Sync
-    </button>
-  </body>
+</body>
 </html>

@@ -3,12 +3,14 @@ body {
   background-color: #121212; /* Dark background */
   color: #ffffff; /* Light text color */
   margin: 0;
-  padding: 20px;
+  padding: 40px;
 }
 
 .container {
-  display: flex;
-  justify-content: space-between;
+  display: flex; /* Aligns input sides horizontally */
+  justify-content: space-between; /* Spaces out input sides */
+  padding: 100px; /* Adds padding around the container */
+  margin-top: 0; /* Adjusts the space between the header and the container */
 }
 
 nav {
@@ -51,9 +53,9 @@ nav ul li a:hover::after {
   border: 1px solid #444; /* Darker border */
   border-radius: 5px;
   padding: 0; /* Remove padding to make it look more like Excel */
-  width: 49.5%;
+  width: 45.5%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  height: 550px; /* Fixed height for both sides */
+  height: 750px; /* Fixed height for both sides */
   transition: width 0.3s ease; /* Smooth transition for width change */
   overflow: auto;
 }
@@ -75,13 +77,144 @@ nav ul li a:hover::after {
   background-color: #2e2e2e; /* Darker dimmed cells */
 }
 
-.syncButton {
-  float: right;
-}
+
 
 /* Media query for smaller screens */
 @media (max-width: 600px) {
   .input-side {
     width: 100%; /* Full width on small screens */
   }
+}
+
+.header-container {
+  display: flex; /* Aligns items horizontally */
+  justify-content: space-between; /* Spaces items out to the left and right */
+  align-items: center; /* Vertically centers items */
+  margin-bottom: -80px; /* Reduces space below the header */
+  padding: 0 100px; /* Adds padding to the left and right (adjust as needed) */
+}
+
+
+.title-container {
+  display: flex;
+  align-items: baseline; /* Aligns text vertically */
+}
+
+.smaller-title {
+  font-size: 1.5rem; /* Adjust size as needed */
+  margin-right: 10px; /* Space between titles */
+}
+
+.larger-title {
+  font-size: 3rem; /* Adjust size for prominence */
+  color: #66bd29; /* The specified green color */
+  margin: 0; /* Remove default margin */
+}
+
+#sidemenu {
+  list-style: none; /* Removes bullet points */
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Removes default margin */
+}
+
+#sidemenu li {
+  display: inline; /* Makes the list items display inline */
+  margin-left: 15px; /* Adds space between list items */
+}
+
+#sidemenu a {
+  text-decoration: none; /* Removes underline from links */
+  color: #ffffff; /* Sets link color (change as needed) */
+  font-size: 1.2rem; /* Adjusts font size for the link */
+}
+
+.import-button1 {
+  display: flex; /* Aligns button and input horizontally */
+  margin: 10px; /* Adds margin around the button group */
+  justify-content: center; /* Center align button group */
+  margin-top: -550px; /* Space above the button */
+}
+
+/* Adjusting the button styles */
+.importButton1 {
+  padding: 10px 20px;
+  background-color: #66bd29; /* Change to your preferred color */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px; /* Space between input and button */
+}
+
+.importButton1:hover {
+  background-color: #5aa82a; /* Darker shade on hover */
+}
+
+
+.import-button2 {
+  display: flex; /* Aligns button and input horizontally */
+  margin: 10px; /* Adds margin around the button group */
+  justify-content: center; /* Center align button group */
+  margin-top: 40px; /* Space above the button */
+}
+
+/* Adjusting the button styles */
+.importButton2 {
+  padding: 10px 20px;
+  background-color: #66bd29; /* Change to your preferred color */
+  color: #ffffff; /* Light text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px; /* Space between input and button */
+}
+
+.importButton2:hover {
+  background-color: #539928; /* Darker shade on hover */
+}
+
+.custom-file-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #66bd29; /* Change this to your preferred color */
+  color: #ffffff; /* Light text color */
+  border-radius: 5px;
+  border: none; /* Remove default border */
+  transition: background-color 0.1s ease; /* Smooth hover effect */
+}
+
+.custom-file-upload input[type="file"] {
+  display: none; /* Hide the default file input */
+}
+
+.custom-file-upload:hover {
+  background-color: #58a123; /* Darker shade on hover */
+  color: #ffffff; /* Light text color */
+}
+
+/* Button Container */
+.button-container {
+  display: flex; /* Enables flex layout */
+  justify-content: center; /* Centers the button horizontally */
+  align-items: center; /* Vertically centers in case of height */
+  margin-top: 40px; /* Space above the button */
+}
+
+/* Sync Button Styles */
+.syncButton {
+  padding: 10px 20px; /* Adjusts padding for the button */
+  background-color: #ffffff; /* Button background color */
+  color: rgb(87, 87, 87); /* Text color */
+  border: none; /* Removes default border */
+  border-radius: 5px; /* Rounds corners of the button */
+  cursor: pointer; /* Changes cursor to pointer on hover */
+  min-width: 100px; /* Sets a minimum width for the button */
+  font-size: 1.2rem; /* Increases font size */
+  transition: background-color 0.2s ease; /* Smooth hover effect */
+}
+
+.syncButton:hover {
+  background-color: #5aa82a; /* Slightly darker shade on hover */
+  color: rgb(255, 255, 255); /* Text color */
 }
