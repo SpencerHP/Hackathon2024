@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Similarity Checker</title>
+</head>
+<body>
+    <h1>Text Similarity Checker</h1>
+    <textarea id="text1" rows="4" cols="50" placeholder="Enter first text..."></textarea>
+    <textarea id="text2" rows="4" cols="50" placeholder="Enter second text..."></textarea>
+    <button onclick="checkSimilarity()">Check Similarity</button>
+    <h2 id="result"></h2>
+
+    <script>
+        async function checkSimilarity() {
+            const text1 = document.getElementById('text1').value;
+            const text2 = document.getElementById('text2').value;
+
+            const response = await fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text1, text2 }),
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerText = `Similarity Score: ${result.similarity.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>

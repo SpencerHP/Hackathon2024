@@ -1,66 +1,111 @@
-from flask import Flask, request, jsonify, render_template
-import numpy as np
+from flask import Flask, render_template, request, jsonify
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import MinMaxScaler
-import random
+import os
 
 app = Flask(__name__)
 
-# Function to compute similarity with weighted columns
-def map_similar_items_with_columns(source_list, target_list, columns, weights, top_n=3):
-    field_similarities = {}
-
-    for idx, (column, weight) in enumerate(zip(columns, weights)):
-        if isinstance(source_list[column][0], str):  # If the column is text
-            vectorizer = TfidfVectorizer().fit_transform(source_list[column] + target_list[column])
-            source_matrix = vectorizer[:len(source_list[column])]
-            target_matrix = vectorizer[len(source_list[column]):]
-            field_similarities[column] = cosine_similarity(source_matrix, target_matrix) * weight
-        else:  # If the column is numeric
-            scaler = MinMaxScaler()
-            source_matrix = scaler.fit_transform(np.array(source_list[column]).reshape(-1, 1))
-            target_matrix = scaler.transform(np.array(target_list[column]).reshape(-1, 1))
-            field_similarities[column] = cosine_similarity(source_matrix, target_matrix) * weight
-
-    combined_similarity = np.sum([field_similarities[column] for column in columns], axis=0)
-    normalized_similarity_matrix = np.interp(combined_similarity, (combined_similarity.min(), combined_similarity.max()), (50, 100))
-
-    mapping = {}
-    for i in range(len(source_list[columns[0]])):
-        top_indices = np.argsort(normalized_similarity_matrix[i])[::-1][:top_n]
-        top_similarities = [(target_list[columns[0]][idx], normalized_similarity_matrix[i][idx]) for idx in top_indices]
-        mapping[source_list[columns[0]][i]] = top_similarities
-
-    return mapping
-
+# Route for the index page
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
-@app.route('/submit', methods=['POST'])
-def submit():
-    source_data = request.form.getlist('source[]')
-    target_data = request.form.getlist('target[]')
-    column_names = request.form.getlist('columns[]')
-    weights = request.form.getlist('weights[]')
+# Route for the canvas page
+@app.route('/canvas')
+def canvas():
+    return render_template('canvas.html')
 
-    # Prepare the source and target lists for similarity mapping
-    source_list = {col: [] for col in column_names}
-    target_list = {col: [] for col in column_names}
+# Route for handling the data from the Handsontable widget
+@app.route('/calculate', methods=['POST'])
+def calculate():
+    data = request.get_json()  # Receive the JSON payload
 
-    for i in range(len(source_data)//len(column_names)):
-        for j, col in enumerate(column_names):
-            source_list[col].append(source_data[i * len(column_names) + j])
+    # Extract the source data, target data, and column weights
+    source_data = data['source']
+    target_data = data['target']
+    weights = data['weights']
 
-    for i in range(len(target_data)//len(column_names)):
-        for j, col in enumerate(column_names):
-            target_list[col].append(target_data[i * len(column_names) + j])
+    # Convert weights to float
+    weights = {key: float(value) for key, value in weights.items()}
 
-    # Perform similarity mapping
-    mapped_items = map_similar_items_with_columns(source_list, target_list, column_names, list(map(float, weights)))
+    # Convert the source and target data into Pandas DataFrames
+    source_df = pd.DataFrame(source_data)
+    target_df = pd.DataFrame(target_data)
 
-    return jsonify(mapped_items)
+    # Remove the first row (header)
+    source_df = source_df.iloc[1:]  # Skip the first row for source data
+    target_df = target_df.iloc[1:]  # Skip the first row for target data
 
+    # Remove rows where all elements are None
+    source_df = source_df.dropna(how='all')
+    target_df = target_df.dropna(how='all')
+
+    # Calculate compatibility percentage
+    compatibility_results = calculate_compatibility(source_df, target_df, weights)
+
+    # Save the compatibility results to an Excel file without headers or indices
+    save_to_excel(compatibility_results)
+
+    # Return a response indicating successful receipt of the data
+    return jsonify({"status": "success", "message": "Data received and compatibility results saved to Excel."})
+
+def calculate_compatibility(source_df, target_df, weights):
+    """
+    Calculate the compatibility percentage between source and target data.
+    This does not compare column names but treats each column equally based on the provided weights.
+    """
+    compatibility_results = []
+
+    for idx1, source_row in source_df.iterrows():
+        source_name = source_row[0]  # Get the actual name from the first column
+
+        for idx2, target_row in target_df.iterrows():
+            target_name = target_row[0]  # Get the actual name from the first column
+
+            # Initialize the total weighted similarity and weight sum
+            total_weighted_similarity = 0
+            weight_sum = 0
+
+            for column in source_df.columns:
+                source_value = source_row[column]
+                target_value = target_row[column]
+
+                if isinstance(source_value, str) and isinstance(target_value, str):
+                    # Vectorization of the texts using TF-IDF
+                    vectorizer = TfidfVectorizer()
+                    tfidf_matrix = vectorizer.fit_transform([source_value, target_value])
+                    source_vector = tfidf_matrix[0].toarray()
+                    target_vector = tfidf_matrix[1].toarray()
+
+                    # Calculate cosine similarity
+                    similarity = cosine_similarity(source_vector, target_vector)[0][0]
+
+                    # Apply the weight to the similarity score
+                    weight = weights.get(column, 1.0)  # Default to 1 if column not in weights
+                    total_weighted_similarity += similarity * weight
+                    weight_sum += weight
+
+            # Calculate the weighted average similarity as a decimal
+            if weight_sum > 0:
+                compatibility_results.append((source_name, target_name, total_weighted_similarity / weight_sum))
+            else:
+                compatibility_results.append((source_name, target_name, 0))  # No valid similarity
+
+    return compatibility_results
+
+def save_to_excel(compatibility_results):
+    """Save the compatibility results to an Excel file without headers and indices."""
+    df_results = pd.DataFrame(compatibility_results)
+
+    # Create the output directory if it doesn't exist
+    output_directory = 'output'
+    os.makedirs(output_directory, exist_ok=True)
+
+    # Save the DataFrame to an Excel file without headers and index
+    output_file_path = os.path.join(output_directory, 'compatibility_results.xlsx')
+    df_results.to_excel(output_file_path, index=False, header=False)  # Save without headers or index
+
+# Run the app in debug mode
 if __name__ == '__main__':
     app.run(debug=True)

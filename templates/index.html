@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InSync</title>
+
+    <script
+      src="https://kit.fontawesome.com/95293c8b37.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div id="header">
+      <div class="container">
+        <nav>
+          <img src="static/images/HNBlogo.png" class="logo" />
+          <ul id="sidemenu">
+            <li><a href="#header">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <i class="fa-solid fa-xmark" onclick="closemenu()"></i>
+          </ul>
+          <i class="fa-solid fa-bars" onclick="openmenu()"></i>
+        </nav>
+        <div class="header-text">
+          <p>Welcome to</p>
+          <h1>InSync</h1>
+          <h1><span class="typing"></span></h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- --------------services--------------->
+
+    <div id="services">
+      <div class="container">
+        <h1 class="sub-title">New Projects</h1>
+        <div class="services-list">
+          <div>
+            <i class="fa-solid fa-list-check"></i>
+            <h2>Past Projects</h2>
+            <button class="open-button" onclick="openForm1()">
+              Click Here
+            </button>
+          </div>
+          <div>
+            <i class="fa-solid fa-diagram-project"></i>
+            <h2>Project</h2>
+            <button class="open-button" onclick="openForm2()">
+              Click Here
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <!--------------contact------------ -->
+    <div id="contact">
+      <div class="container">
+        <div class="row">
+          <div class="contact-left">
+            <h1 class="sub-title">Contact Us</h1>
+            <p>
+              <i class="fa-solid fa-envelope"></i
+              >MandAIntegrationManagementOffice@huntington.com
+            </p>
+            <br />
+          </div>
+          <div class="contact-right">
+            <form>
+              <input type="text" name="Name" placeholder="Your Name" required />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                required
+              />
+              <textarea
+                name="Message"
+                rows="6"
+                placeholder="Your Message"
+              ></textarea>
+              <button type="submit" class="btn btn2">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-popup" id="myForm1">
+      <form action="/action_page.php" class="form-container1">
+        <h1><u>Select A Past Project</u></h1>
+
+        <ul id="pastProjectsList">
+          <li><a href="#header">Digital Torana</a></li>
+          <li><a href="#header">Capstone Partners</a></li>
+          <li><a href="#header">TCF Bank</a></li>
+          <li><a href="#header">City Wide Building Services</a></li>
+          <li><a href="#header">FirstMerit Corporation</a></li>
+        </ul>
+
+        <button type="button" class="formbtnCancel" onclick="closeForm1()">
+          Close
+        </button>
+      </form>
+    </div>
+
+    <div class="form-popup" id="myForm2">
+      <form action="/action_page.php" class="form-container">
+        <h1>Create A New Project</h1>
+
+        <input
+          type="text"
+          placeholder="Enter Project Name"
+          name="prjName"
+          required
+        />
+
+        <a href="{{ url_for('canvas') }}">Create</a>
+        <br />
+        <br />
+        <button type="button" class="formbtnCancel" onclick="closeForm2()">
+          Close
+        </button>
+      </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
