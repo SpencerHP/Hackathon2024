@@ -1,62 +1,87 @@
-* {
-  margin: 0;
-  padding: 0;
-  font-family: "Poppins", sans-serif;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
 body {
-  background: #080808;
-  color: #fff;
+  font-family: Arial, sans-serif;
+  background-color: #121212; /* Dark background */
+  color: #ffffff; /* Light text color */
+  margin: 0;
+  padding: 20px;
 }
 
 .container {
   display: flex;
-  height: 100%;
+  justify-content: space-between;
 }
 
-.form-side {
-  flex: 1;
-  padding: 20px;
+nav {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  border: 1px solid #ccc;
-  transition: background-color 0.3s;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-.left {
-  background-color: #f0f8ff;
+nav ul li {
+  display: inline-block;
+  list-style: none;
+  margin: 10px 20px;
 }
 
-.right {
-  background-color: #ffe4e1;
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 180x;
+  position: relative;
 }
 
-h2 {
-  margin-bottom: 20px;
+nav ul li a::after {
+  content: "";
+  width: 0;
+  height: 3px;
+  background: #66bd29;
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  transition: 0.5s;
 }
 
-input {
-  margin: 10px 0;
-  padding: 10px;
-  width: 80%;
+nav ul li a:hover::after {
+  width: 100%;
 }
 
-button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.input-side {
+  background-color: #1e1e1e; /* Darker background for input sides */
+  border: 1px solid #444; /* Darker border */
+  border-radius: 5px;
+  padding: 0; /* Remove padding to make it look more like Excel */
+  width: 49.5%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  height: 550px; /* Fixed height for both sides */
+  transition: width 0.3s ease; /* Smooth transition for width change */
+  overflow: auto;
 }
 
-button:hover {
-  background-color: #0056b3;
+/* Handsontable specific styles for dark mode */
+.handsontable th,
+.handsontable td {
+  background-color: #2e2e2e; /* Darker cell background */
+  color: #ffffff; /* Light text color */
+  border: 1px solid #444; /* Dark border for cells */
+}
+
+.handsontable th {
+  background-color: #3a3a3a; /* Darker header background */
+  font-weight: bold;
+}
+
+.handsontable .htDimmed {
+  background-color: #2e2e2e; /* Darker dimmed cells */
+}
+
+.syncButton {
+  float: right;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+  .input-side {
+    width: 100%; /* Full width on small screens */
+  }
 }

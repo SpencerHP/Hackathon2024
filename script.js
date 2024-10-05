@@ -31,9 +31,6 @@ var typed = new Typed(".typing", {
     loop: true
 });
 
-
-
-
 function openForm1() {
     document.getElementById("myForm1").style.display = "block";
   }
@@ -50,17 +47,3 @@ function openForm2() {
   function closeForm2() {
     document.getElementById("myForm2").style.display = "none";
   }
-
-
-  function submitForm(side) {
-    let field1, field2;
-    if (side === 'left') {
-        field1 = document.getElementById('field1').value;
-        field2 = document.getElementById('field2').value;
-        alert(`Left Side:\nField 1: ${field1}\nField 2: ${field2}`);
-    } else {
-        field1 = document.getElementById('field3').value;
-        field2 = document.getElementById('field4').value;
-        alert(`Right Side:\nField 3: ${field1}\nField 4: ${field2}`);
-    }
-}

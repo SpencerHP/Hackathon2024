@@ -1,29 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>InSync Canvas</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css"
+    />
     <link rel="stylesheet" href="canvasStyle.css" />
+    <title>Excel Widget Example - Dark Mode</title>
   </head>
-
   <body>
+    <div class="Header"></div>
+      <nav>
+        <p>Project 1</p>
+        <p>Workbook 1</p>
+        <h5>InSync</h5>
+        <h1>Canvas</h1>
+        <ul id="sidemenu">
+          <li><a href="/index.html">Home</a></li>
+        </ul>
+      </nav>
+    </div>
+    
+    
     <div class="container">
-      <div class="form-side left">
-        <h2>Form Side 1</h2>
-        <input type="text" id="field1" placeholder="Field 1" required />
-        <input type="text" id="field2" placeholder="Field 2" required />
-        <button onclick="submitForm('left')">Submit</button>
-      </div>
-      <div class="form-side right">
-        <h2>Form Side 2</h2>
-        <input type="text" id="field3" placeholder="Field 3" required />
-        <input type="text" id="field4" placeholder="Field 4" required />
-        <button onclick="submitForm('right')">Submit</button>
-      </div>
+      <div class="input-side" id="input-side-1"></div>
+      <div class="input-side" id="input-side-2"></div>
     </div>
 
-    <script src="script.js"></script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <script>
+      // Data for the Handsontable instances
+      const data1 = [
+        [
+          "",
+          "Header 1",
+          "Header 2",
+          "Header 3",
+          "Header 4",
+          "Header 5",
+          "Header 6",
+          "Header 7",
+          "Header 8",
+          "Header 9",
+          "Header 10",
+        ],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+      ];
+
+      const data2 = [
+        [
+          "",
+          "Header 1",
+          "Header 2",
+          "Header 3",
+          "Header 4",
+          "Header 5",
+          "Header 6",
+          "Header 7",
+          "Header 8",
+          "Header 9",
+          "Header 10",
+        ],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+      ];
+
+      // Initialize Handsontable for Input Side 1
+      const container1 = document.getElementById("input-side-1");
+      const hot1 = new Handsontable(container1, {
+        data: data1,
+        rowHeaders: true,
+        colHeaders: true,
+        fixedRowsTop: 1,
+        fixedColumnsLeft: 1,
+        filters: true,
+        dropdownMenu: true,
+        licenseKey: "non-commercial-and-evaluation", // For non-commercial use
+      });
+
+      // Initialize Handsontable for Input Side 2
+      const container2 = document.getElementById("input-side-2");
+      const hot2 = new Handsontable(container2, {
+        data: data2,
+        rowHeaders: true,
+        colHeaders: true,
+        fixedRowsTop: 1,
+        fixedColumnsLeft: 1,
+        filters: true,
+        dropdownMenu: true,
+        licenseKey: "non-commercial-and-evaluation", // For non-commercial use
+      });
+    </script>
+
+    <br />
+    <br />
+    <button
+      type="button"
+      class="syncButton"
+      onclick="needToCreateFunctionMaybe()"
+    >
+      Sync
+    </button>
   </body>
 </html>
