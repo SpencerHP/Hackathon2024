@@ -17,7 +17,6 @@ body {
 #header {
   width: 100%;
   height: 100vh;
-  padding-top: 40px; /* Adjust this value to add padding from the top of the header */
 }
 
 nav {
@@ -158,7 +157,7 @@ nav ul li a:hover::after {
 
 /* -----------------services---------*/
 #services {
-  padding: -200px 0;
+  padding: 30px 0;
 }
 
 .services-list {
@@ -349,7 +348,7 @@ form textarea {
   background: #262626;
   padding: 15px;
   margin: 15px 0;
-  color: #ff0000;
+  color: #fff;
   font-size: 18px;
   border-radius: 6px;
 }
@@ -432,80 +431,43 @@ nav .fa-solid {
 .form-popup {
   display: none;
   position: fixed;
-  bottom: 50%; /* Position it halfway up from the bottom */
-  right: 50%;
-  transform: translate(50%, 50%); /* Center it horizontally */
-  width: 400px; /* Set a fixed width for aspect ratio */
-  height: 300px; /* Set a fixed height for aspect ratio */
-  background-color: #d3d3d300; /* Change background color to light gray */
+  bottom: 50%;
+  right: 40%;
+  border: 3px solid #f1f1f1;
   z-index: 9;
-  border-radius: 15px; /* Rounded corners */
+  border-radius: 15px;
 }
-
-
 
 /* Add styles to the form container */
 .form-container {
-  width: 100%;
-  height: 100%; /* Ensures it adapts to the form-popup's fixed size */
-  padding: 10px;
-  background-color: #262626;
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column; /* Ensures a neat stacking of form elements */
-  justify-content: space-between;
-}
-
-/* Adjust the button styling */
-.form-container .create-btn {
-  background-color: #04aa6d00; /* Set background color */
-  color: white; /* Set text color */
-  padding: 10px 20px; /* Adjust padding to change button height */
-  border: 2px; /* Remove border */
-  border-radius: 2px;
-  border-width: 10px;
-  border-color: #66bd29;
-  cursor: pointer; /* Change cursor to pointer on hover */
-  width: 100%; /* Full width */
-  margin-top: 10px; /* Reduce the margin to bring it closer to the input */
-  border-radius: 15px; /* Rounded corners */
-  opacity: 0.8; /* Slightly transparent */
-}
-
-/* Optional: Add hover effect for button */
-.form-container .create-btn:hover {
-  opacity: 1; /* Full opacity on hover */
-}
-
-.form-container1 {
-  width: 100%;
-  height: 100%;
+  max-width: 300px;
   padding: 10px;
   background-color: #080808;
   border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+}
+
+.form-container1 {
+  width: auto;
+  height: auto;
+  padding: 10px;
+  background-color: #080808;
+  border-radius: 15px;
 }
 
 /* Full-width input fields */
 .form-container input[type="text"] {
-  width: 100%; /* Full width */
-  padding: 20px 10px; /* Adjust padding for height and width */
-  margin: 80px 0 22px 0; /* Adjust margin as needed */
-  border: none; /* Remove border */
-  background: black; /* Background color */
-  color: white; /* Text color */
-  border-radius: 5px; /* Optional: rounded corners */
-  font-size: 14px; /* Adjust font size for smaller height */
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: black;
 }
 
 /* When the inputs get focus, do something */
 .form-container input[type="text"]:focus {
-  background-color: black; /* Background color on focus */
-  outline: none; /* Remove outline */
+  background-color: black;
+  outline: none;
 }
-
 
 /* Set a style for the submit/login button */
 .form-container .formbtn {
@@ -524,38 +486,25 @@ nav .fa-solid {
 .form-container .formbtnCancel {
   background-color: red;
   border-radius: 15px;
-  color: white;
-  padding: 16px 20px;
-  cursor: pointer;
-  border: none;
-  width: 100%;
-  margin-bottom: 10px;
-  opacity: 0.8;
 }
 
 /* Add some hover effects to buttons */
-.form-container .formbtn:hover,
-.form-container .formbtnCancel:hover {
+.form-container .formbtn:hover {
   opacity: 1;
 }
 
-/* Styling for list items */
 form ul li {
   list-style: none;
-  margin: 20px 0;
-  padding-left: 10px;
-  
+  margin: 20px 20px;
 }
 
-/* Styling for list links */
 form ul li a {
   color: #fff;
   text-decoration: none;
-  font-size: 18px; /* Fixed font size */
+  font-size: 180x;
   position: relative;
 }
 
-/* Hover effect for links */
 form ul li a::after {
   content: "";
   width: 0;
@@ -571,14 +520,17 @@ form ul li a:hover::after {
   width: 100%;
 }
 
-/* General anchor tag styles */
+form a {
+  list-style: none;
+}
+
 form a {
   color: #fff;
   text-decoration: none;
+  font-size: 180x;
   position: relative;
 }
 
-/* Hover underline effect for general anchor tags */
 form a::after {
   content: "";
   width: 0;
@@ -593,38 +545,3 @@ form a::after {
 form a:hover::after {
   width: 100%;
 }
-
-
-.service-item {
-  display: block;
-  text-decoration: none;
-  color: inherit; /* Keeps the text color consistent */
-}
-
-.service-item div {
-  cursor: pointer;
-  padding: 20px;/* Optional: Add borders for a clickable box style */
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.service-item div:hover {
-  background-color: #66bd29; /* Optional: Background color change on hover */
-}
-
-
-/* Close icon styles */
-.close-icon {
-  position: absolute;
-  top: 20px; /* Adjust to position the icon vertically */
-  right: 20px; /* Adjust to position the icon horizontally */
-  cursor: pointer; /* Change cursor to pointer on hover */
-  font-size: 20px; /* Adjust size of the icon */
-  color: rgb(255, 255, 255); /* Change color to match your design */
-  z-index: 10; /* Ensure it is above other content */
-}
-
-.close-icon:hover {
-  color: red; /* Optional: Change color on hover for feedback */
-}
-

@@ -109,6 +109,9 @@
       const closeButton = document.getElementById("close-button");
 
       function showPopup(primaryKey, details, secondColumnName, thirdColumnName) {
+        // Sort the details array based on the third column (thirdColumn) in descending order
+        details.sort((a, b) => b.thirdColumn - a.thirdColumn);
+
         const labels = details.map(item => item.secondColumn);
         const data = details.map(item => item.thirdColumn || 0); // Default to 0 if empty
 

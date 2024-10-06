@@ -41,25 +41,25 @@
 
     <div id="services">
       <div class="container">
+        <h1 class="sub-title">New Projects</h1>
         <div class="services-list">
-          <!-- New Project -->
-          <a href="javascript:void(0)" onclick="openForm2()" class="service-item">
-            <div>
-              <i class="fa-solid fa-diagram-project"></i>
-              <h2>New Project</h2>
-            </div>
-          </a>
-          <!-- Past Projects -->
-          <a href="javascript:void(0)" onclick="openForm1()" class="service-item">
-            <div>
-              <i class="fa-solid fa-list-check"></i>
-              <h2>Past Projects</h2>
-            </div>
-          </a>
+          <div>
+            <i class="fa-solid fa-list-check"></i>
+            <h2>Past Projects</h2>
+            <button class="open-button" onclick="openForm1()">
+              Click Here
+            </button>
+          </div>
+          <div>
+            <i class="fa-solid fa-diagram-project"></i>
+            <h2>Project</h2>
+            <button class="open-button" onclick="openForm2()">
+              Click Here
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    
 
     <br />
     <br />
@@ -67,42 +67,11 @@
     <br />
     <br />
     <br />
-    <!-- ------------contact------------
-    <div id="contact">
-      <div class="container">
-        <div class="row">
-          <div class="contact-left">
-            <h1 class="sub-title">Contact Us</h1>
-            <p>
-              <i class="fa-solid fa-envelope"></i
-              >MandAIntegrationManagementOffice@huntington.com
-            </p>
-            <br />
-          </div>
-          <div class="contact-right">
-            <form>
-              <input type="text" name="Name" placeholder="Your Name" required />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                required
-              />
-              <textarea
-                name="Message"
-                rows="6"
-                placeholder="Your Message"
-              ></textarea>
-              <button type="submit" class="btn btn2">Submit</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
+   
     <div class="form-popup" id="myForm1">
-      <form action="/action_page.php" class="form-container">
-        <i class="fa-solid fa-xmark close-icon" onclick="closeForm1()"></i> <!-- X icon -->        
+      <form action="/action_page.php" class="form-container1">
+        <h1><u>Select A Past Project</u></h1>
+
         <ul id="pastProjectsList">
           <li><a href="#header">Digital Torana</a></li>
           <li><a href="#header">Capstone Partners</a></li>
@@ -110,22 +79,32 @@
           <li><a href="#header">City Wide Building Services</a></li>
           <li><a href="#header">FirstMerit Corporation</a></li>
         </ul>
+
+        <button type="button" class="formbtnCancel" onclick="closeForm1()">
+          Close
+        </button>
       </form>
     </div>
-    
+
     <div class="form-popup" id="myForm2">
       <form action="/action_page.php" class="form-container">
-        <i class="fa-solid fa-xmark close-icon" onclick="closeForm2()"></i> <!-- X icon -->
-    
-        <input type="text" placeholder="Enter Project Name" name="prjName" required />
-        
-        <a href="{{ url_for('canvas') }}" class="btn create-btn">Create</a>
+
+        <input
+          type="text"
+          placeholder="Enter Project Name"
+          name="prjName"
+          required
+        />
+
+        <a href="{{ url_for('canvas') }}">Create</a>
+        <br />
+        <br />
+        <button type="button" class="formbtnCancel" onclick="closeForm2()">
+          Close
+        </button>
       </form>
     </div>
-    
-    
-    
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-    
   </body>
 </html>
