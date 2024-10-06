@@ -16,6 +16,11 @@ def index():
 def canvas():
     return render_template('canvas.html')
 
+# Route for the output page
+@app.route('/output')
+def output():
+    return render_template('output.html')
+
 # Route for handling the data from the Handsontable widget
 @app.route('/calculate', methods=['POST'])
 def calculate():
@@ -51,48 +56,65 @@ def calculate():
     return jsonify({"status": "success", "message": "Data received and compatibility results saved to Excel."})
 
 def calculate_compatibility(source_df, target_df, weights):
-    """
-    Calculate the compatibility percentage between source and target data.
-    This does not compare column names but treats each column equally based on the provided weights.
-    """
     compatibility_results = []
+    
+    # Define an inflation factor (greater than 1 to inflate scores)
+    inflation_factor = 2.0  # You can adjust this factor as needed
 
+    # Iterate through each source row
     for idx1, source_row in source_df.iterrows():
         source_name = source_row[0]  # Get the actual name from the first column
 
+        if pd.isna(source_name) or source_name.strip() == "":
+            continue
+
+        # Iterate through each target row
         for idx2, target_row in target_df.iterrows():
             target_name = target_row[0]  # Get the actual name from the first column
+
+            if pd.isna(target_name) or target_name.strip() == "":
+                continue
 
             # Initialize the total weighted similarity and weight sum
             total_weighted_similarity = 0
             weight_sum = 0
 
+            # Loop through each column for similarity calculation
             for column in source_df.columns:
                 source_value = source_row[column]
                 target_value = target_row[column]
+
+                # Check for empty values
+                if pd.isna(source_value) or pd.isna(target_value) or source_value.strip() == "" or target_value.strip() == "":
+                    continue  # Skip this comparison if either value is empty
 
                 if isinstance(source_value, str) and isinstance(target_value, str):
                     # Vectorization of the texts using TF-IDF
                     vectorizer = TfidfVectorizer()
                     tfidf_matrix = vectorizer.fit_transform([source_value, target_value])
-                    source_vector = tfidf_matrix[0].toarray()
-                    target_vector = tfidf_matrix[1].toarray()
 
-                    # Calculate cosine similarity
-                    similarity = cosine_similarity(source_vector, target_vector)[0][0]
+                    if tfidf_matrix.shape[0] > 1:
+                        source_vector = tfidf_matrix[0].toarray()
+                        target_vector = tfidf_matrix[1].toarray()
 
-                    # Apply the weight to the similarity score
-                    weight = weights.get(column, 1.0)  # Default to 1 if column not in weights
-                    total_weighted_similarity += similarity * weight
-                    weight_sum += weight
+                        # Calculate cosine similarity
+                        similarity = cosine_similarity(source_vector, target_vector)[0][0]
+
+                        # Apply the weight to the similarity score
+                        weight = weights.get(column, 1.0)  # Default to 1 if column not in weights
+                        total_weighted_similarity += similarity * weight
+                        weight_sum += weight
 
             # Calculate the weighted average similarity as a decimal
             if weight_sum > 0:
-                compatibility_results.append((source_name, target_name, total_weighted_similarity / weight_sum))
+                inflated_score = (total_weighted_similarity / weight_sum) * inflation_factor  # Inflate the score
+                inflated_score = min(inflated_score, 1.0)  # Ensure the score doesn't exceed 1
+                compatibility_results.append((source_name, target_name, inflated_score))
             else:
                 compatibility_results.append((source_name, target_name, 0))  # No valid similarity
 
     return compatibility_results
+
 
 def save_to_excel(compatibility_results):
     """Save the compatibility results to an Excel file without headers and indices."""

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Excel File Input</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='outputStyle.css') }}"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>Excel File Input</h1>
+    <label for="file-input">Upload an Excel file:</label>
+    <input type="file" id="file-input" accept=".xlsx, .xls" />
+    <div id="output"></div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close-button" id="close-button">&times;</span>
+        <h2 id="modal-title"></h2>
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("file-input")
+        .addEventListener("change", handleFileSelect);
+
+      function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(firstSheet, {
+            header: 1,
+            defval: "",
+          });
+
+          // Clear the output area
+          const output = document.getElementById("output");
+          output.innerHTML = "";
+
+          // Extract headers
+          const headers = jsonData[0]; // First row as headers
+          const secondColumnName = headers[1] || "Second Column"; // Name for the second column
+          const thirdColumnName = headers[2] || "Third Column"; // Name for the third column
+
+          // Object to store grouped data
+          const groupedData = {};
+
+          // Process the data
+          jsonData.forEach((row, index) => {
+            // if (index === 0) return; // Skip header row
+
+            const primaryKey = row[0]?.trim().toLowerCase();
+            if (!primaryKey) {
+              console.warn(`Row ${index + 1} has no valid primary key:`, row);
+              return;
+            }
+
+            // Initialize folder if it doesn't exist
+            if (!groupedData[primaryKey]) {
+              groupedData[primaryKey] = [];
+            }
+
+            // Push the second and third columns into the corresponding primary key
+            groupedData[primaryKey].push({
+              secondColumn: row[1] || "N/A",
+              thirdColumn: row[2] || 0, // Default to 0 if empty
+            });
+          });
+
+          // Display only the primary keys
+          for (const primaryKey in groupedData) {
+            const folderDiv = document.createElement("div");
+            folderDiv.className = "folder";
+
+            // Create clickable primary key
+            const primaryKeyElement = document.createElement("span");
+            primaryKeyElement.className = "item";
+            primaryKeyElement.textContent = primaryKey;
+            primaryKeyElement.onclick = () =>
+              showPopup(
+                primaryKey,
+                groupedData[primaryKey],
+                secondColumnName,
+                thirdColumnName
+              );
+            folderDiv.appendChild(primaryKeyElement);
+
+            output.appendChild(folderDiv);
+            output.appendChild(document.createElement("br"));
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }
+
+      const modal = document.getElementById("modal");
+      const modalTitle = document.getElementById("modal-title");
+      const closeButton = document.getElementById("close-button");
+
+      function showPopup(
+        primaryKey,
+        details,
+        secondColumnName,
+        thirdColumnName
+      ) {
+        const labels = details.map((item) => item.secondColumn);
+        const data = details.map((item) => item.thirdColumn || 0); // Default to 0 if empty
+
+        modalTitle.textContent = `Details for "${primaryKey}"`;
+
+        const ctx = document.getElementById("myChart").getContext("2d");
+        if (window.myBarChart) {
+          window.myBarChart.destroy(); // Destroy existing chart instance
+        }
+
+        window.myBarChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "",
+                data: data,
+                backgroundColor: "rgba(102, 189, 41, 0.6)",
+                borderColor: "rgba(102, 189, 41, 1)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: false, // Hides the legend
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "",
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "",
+                },
+              },
+            },
+          },
+        });
+
+        modal.style.display = "block";
+      }
+
+      closeButton.onclick = () => {
+        modal.style.display = "none";
+      };
+
+      window.onclick = (event) => {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>
