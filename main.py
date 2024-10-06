@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -20,6 +20,13 @@ def canvas():
 @app.route('/output')
 def output():
     return render_template('output.html')
+
+# Route for serving the Excel file
+@app.route('/output/compatibility_results.xlsx')
+def serve_excel():
+    output_directory = 'output'
+    output_file_path = os.path.join(output_directory, 'compatibility_results.xlsx')
+    return send_file(output_file_path, as_attachment=True)
 
 # Route for handling the data from the Handsontable widget
 @app.route('/calculate', methods=['POST'])
