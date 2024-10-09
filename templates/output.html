@@ -12,6 +12,15 @@
         font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         line-height: 1.6;
         color: #fff;
+        margin: 0;
+        padding: 0;
+        background-color: #121212;
+      }
+      .container {
+        width: 95%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
       }
       .card {
         cursor: pointer;
@@ -26,12 +35,81 @@
         background-color: #66bd29;
         box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       }
-      h1 {
+      h1, h2 {
         font-weight: 300;
         color: #ffffff;
       }
       .modal-content {
         font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        width: 90%;
+        max-width: 1200px;
+      }
+      #myChart {
+        width: 100% !important;
+        height: 400px !important;
+      }
+      #tooltip {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px;
+        border-radius: 3px;
+        font-size: 14px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+      }
+      .modal-content {
+        background-color: #1e1e1e;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 90%;
+        max-width: 1200px;
+        color: #fff;
+      }
+      .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close-button:hover,
+      .close-button:focus {
+        color: #fff;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      #top50Table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      #top50Table th, #top50Table td {
+        border: 1px solid #444;
+        padding: 8px;
+        text-align: left;
+      }
+      #top50Table th {
+        background-color: #333;
+        color: #fff;
+      }
+      #top50Table tr:nth-child(even) {
+        background-color: #2a2a2a;
+      }
+      #top50Table tr:hover {
+        background-color: #3a3a3a;
       }
     </style>
   </head>
@@ -44,7 +122,23 @@
         <div class="modal-content">
           <span class="close-button" id="close-button">&times;</span>
           <h2 id="modal-title"></h2>
-          <canvas id="myChart"></canvas>
+          <div style="position: relative;">
+            <canvas id="myChart"></canvas>
+            <div id="tooltip"></div>
+          </div>
+          <div id="top50TableContainer">
+            <h3>Top 50 Scores</h3>
+            <table id="top50Table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th id="secondColumnHeader">Item</th>
+                  <th id="thirdColumnHeader">Score</th>
+                </tr>
+              </thead>
+              <tbody id="top50TableBody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -109,18 +203,20 @@
       const closeButton = document.getElementById("close-button");
 
       function showPopup(primaryKey, details, secondColumnName, thirdColumnName) {
-        // Sort the details array based on the third column (thirdColumn) in descending order
         details.sort((a, b) => b.thirdColumn - a.thirdColumn);
+        const topDetails = details.slice(0, 50);
 
-        const labels = details.map(item => item.secondColumn);
-        const data = details.map(item => item.thirdColumn || 0); // Default to 0 if empty
+        const labels = topDetails.map(item => item.secondColumn);
+        const data = topDetails.map(item => item.thirdColumn || 0);
 
-        modalTitle.textContent = `Details for "${primaryKey}"`;
+        modalTitle.textContent = `Top 50 Details for "${primaryKey}"`;
 
         const ctx = document.getElementById("myChart").getContext("2d");
         if (window.myBarChart) {
-          window.myBarChart.destroy(); // Destroy existing chart instance
+          window.myBarChart.destroy();
         }
+
+        const tooltip = document.getElementById('tooltip');
 
         window.myBarChart = new Chart(ctx, {
           type: "bar",
@@ -135,9 +231,53 @@
             }],
           },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
-                display: false, // Hides the legend
+                display: false,
+              },
+              tooltip: {
+                enabled: false,
+                external: function(context) {
+                  const tooltipEl = tooltip;
+
+                  // Hide if no tooltip
+                  if (context.tooltip.opacity === 0) {
+                    tooltipEl.style.opacity = 0;
+                    return;
+                  }
+
+                  // Set Text
+                  if (context.tooltip.body) {
+                    const titleLines = context.tooltip.title || [];
+                    const bodyLines = context.tooltip.body.map(b => b.lines);
+
+                    let innerHtml = '<div>';
+
+                    titleLines.forEach(function(title) {
+                      innerHtml += '<span style="font-size: 18px; font-weight: bold;">' + title + '</span>';
+                    });
+                    innerHtml += '</div><div>';
+
+                    bodyLines.forEach(function(body, i) {
+                      innerHtml += '<span style="font-size: 14px;">' + body + '</span>';
+                    });
+                    innerHtml += '</div>';
+
+                    tooltipEl.innerHTML = innerHtml;
+                  }
+
+                  const position = context.chart.canvas.getBoundingClientRect();
+
+                  // Display, position, and set styles for font
+                  tooltipEl.style.opacity = 1;
+                  tooltipEl.style.position = 'absolute';
+                  tooltipEl.style.left = position.left + window.pageXOffset + context.tooltip.caretX - 350 + 'px';
+                  tooltipEl.style.top = position.top + window.pageYOffset + context.tooltip.caretY + 'px';
+                  tooltipEl.style.font = '16px "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+                  tooltipEl.style.padding = context.tooltip.options.padding + 'px ' + context.tooltip.options.padding + 'px';
+                }
               },
             },
             scales: {
@@ -145,31 +285,54 @@
                 beginAtZero: true,
                 title: {
                   display: true,
-                  text: "",
+                  text: thirdColumnName,
+                  display: false,  // Hide x-axis labels
                 },
               },
               x: {
                 title: {
                   display: true,
-                  text: "",
+                  text: secondColumnName,
+                  display: false,  // Hide x-axis labels
+                },
+                ticks: {
+                  maxRotation: 90,
+                  minRotation: 90,
+                  display: false,  // Hide x-axis labels
                 },
               },
             },
+            barPercentage: 1.0,
+            categoryPercentage: 0.9,
           },
+        });
+
+        // Update the table headers
+        document.getElementById('secondColumnHeader').textContent = secondColumnName;
+        document.getElementById('thirdColumnHeader').textContent = thirdColumnName;
+
+        // Populate the table with top 50 scores
+        const tableBody = document.getElementById('top50TableBody');
+        tableBody.innerHTML = ''; // Clear existing rows
+        topDetails.forEach((item, index) => {
+          const row = tableBody.insertRow();
+          row.insertCell(0).textContent = index + 1; // Rank
+          row.insertCell(1).textContent = item.secondColumn;
+          row.insertCell(2).textContent = item.thirdColumn;
         });
 
         modal.style.display = "block";
       }
 
-      closeButton.onclick = () => {
+      closeButton.onclick = function() {
         modal.style.display = "none";
-      };
+      }
 
-      window.onclick = event => {
+      window.onclick = function(event) {
         if (event.target == modal) {
           modal.style.display = "none";
         }
-      };
+      }
     </script>
   </body>
 </html>
